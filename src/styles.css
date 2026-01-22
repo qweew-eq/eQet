@@ -1,0 +1,9 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #111;
+  color: #eee;
+}
+#map { position: absolute; top:0; left:0; width:100%; height:100%; }
+#panel { position: absolute; top: 10px; left: 10px; width: 320px; background: #222; border-radius: 8px; padding: 10px; }
+.station-dot { border-radius: 50%; }
