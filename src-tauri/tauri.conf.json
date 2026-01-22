@@ -19,8 +19,14 @@
       {
         "title": "eQet - Earthquake Early Warning",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "resizable": true
       }
     ]
+  },
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "distDir": "../dist",
+    "devPath": "http://localhost:5173"
   }
 }
