@@ -3,7 +3,8 @@ import { initMap } from './map/map.js';
 import { connectWolfx } from './ws/wolfx.js';
 import { waveAnimation } from './ui/waves.js';
 import { updatePanel } from './ui/panel.js';
-import { playAlert } from './ui/alerts.js';
+import { AudioPlayer as playAlert } from './ui/alerts.js';
+
 
 // Initialize map
 const map = initMap();
