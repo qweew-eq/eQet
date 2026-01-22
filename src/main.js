@@ -17,7 +17,7 @@ connectWolfx((eew) => {
   activeEEWs.push(eew);
 
   // Update panel UI
-  renderPanel(eew);
+  updatePanel(eew);
 
   // Play alerts based on intensity / type
   playAlert(eew);
