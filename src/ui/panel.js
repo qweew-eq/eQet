@@ -7,12 +7,12 @@ const MAXINT_IMAGES = {
   '2': 'shindo_2.png',
   '3': 'shindo_3.png',
   '4': 'shindo_4.png',
-  '5-': 'shindo_5l.png',
-  '5+': 'shindo_5u.png',
-  '6-': 'shindo_6l.png',
-  '6+': 'shindo_6u.png',
+  '5-': 'shindo_5-.png',
+  '5+': 'shindo_5+.png',
+  '6-': 'shindo_6-.png',
+  '6+': 'shindo_6+.png',
   '7': 'shindo_7.png',
-  FUMEI: 'unk_int.png', // unknown intensity
+  FUMEI: 'shindo_unk_int.png', // unknown intensity
 };
 
 // Sound triggers
