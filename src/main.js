@@ -3,7 +3,6 @@ import { initMap } from './map/map.js';
 import { connectWolfx } from './ws/wolfx.js';
 import { waveAnimation } from './ui/waves.js';
 import { updatePanel } from './ui/panel.js';
-import { renderStations } from './ui/stations.js';
 import { playAlert } from './ui/alerts.js';
 
 // Initialize map
@@ -22,9 +21,7 @@ connectWolfx((eew) => {
 
   // Play alerts based on intensity / type
   playAlert(eew);
-
-  // Update stations UI (PGA dots)
-  renderStations(eew, map);
+  
 });
 
 // Animation loop for S/P wave propagation
