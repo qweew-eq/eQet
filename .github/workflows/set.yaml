@@ -1,0 +1,20 @@
+name: My First Action
+# 1. Trigger: When should this run?
+on:
+  push:
+    branches: [ "main" ]
+
+# 2. Jobs: What should happen?
+jobs:
+  build:
+    # Use a GitHub-hosted runner (a virtual machine)
+    runs-on: ubuntu-latest
+
+    steps:
+      # This step checks out your code so the runner can access it
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # This step runs a standard shell command
+      - name: Run a script
+        run: echo "Hello, GitHub Actions is working!"
