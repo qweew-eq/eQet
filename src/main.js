@@ -2,7 +2,7 @@ import './styles.css';
 import { initMap } from './map/map.js';
 import { connectWolfx } from './ws/wolfx.js';
 import { waveAnimation } from './ui/waves.js';
-import { renderPanel } from './ui/panel.js';
+import { updatePanel } from './ui/panel.js';
 import { renderStations } from './ui/stations.js';
 import { playAlert } from './ui/alerts.js';
 
