@@ -1,3 +1,9 @@
+name: Deploy Web and Windows
+on:
+  push:
+    branches: [ main ]
+
+jobs:
   # JOB 1: Web Deployment
   deploy-web:
     runs-on: ubuntu-latest
@@ -15,7 +21,6 @@
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # The secret sauce: using 'pages deploy' and pointing to ./dist
           command: pages deploy ./dist --project-name=eqet
 
   # JOB 2: Windows Build
@@ -33,7 +38,7 @@
       - name: Build Web Assets for Tauri
         run: |
           npm install
-          npm run build  # This creates the 'dist' folder Tauri is looking for
+          npm run build
       - name: Build Tauri App
         uses: tauri-apps/tauri-action@v0
         env:
