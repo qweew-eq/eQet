@@ -1,36 +1,40 @@
-name: Build Desktop App
-on:
-  push:
-    branches: [ "main" ] # Triggered when you push code to your main branch
-
-jobs:
-  build:
-    permissions:
-      contents: write
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [windows-latest] # You can add macos-latest or ubuntu-latest later
-
-    runs-on: ${{ matrix.platform }}
+  # JOB 1: Web Deployment
+  deploy-web:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
       
-      - name: setup node
+      - name: Build Web
+        run: |
+          bun install
+          bun run build
+          
+      - name: Deploy to Cloudflare
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # The secret sauce: using 'pages deploy' and pointing to ./dist
+          command: pages deploy ./dist --project-name=eqet
+
+  # JOB 2: Windows Build
+  build-windows:
+    runs-on: windows-latest
+    needs: deploy-web
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-
-      - name: install dependencies
-        run: npm install
-
-      - name: build tauri app
+          node-version: lts/*
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Build Web Assets for Tauri
+        run: |
+          npm install
+          npm run build  # This creates the 'dist' folder Tauri is looking for
+      - name: Build Tauri App
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tagName: v__VERSION__ # This creates a "Release" for you
-          releaseName: "eQet Release v__VERSION__"
-          releaseBody: "Automated build from mobile."
-          releaseDraft: true
-          prerelease: false
