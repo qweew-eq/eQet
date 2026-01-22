@@ -3,17 +3,12 @@ import { waveRadii } from '../assets/wavecalc.js';
 
 /**
  * Initialize wave layers on the map
- * @param {maplibregl.Map} map
  */
 export function initWaveLayers(map) {
-  // P-wave circle
   if (!map.getSource('p-wave')) {
     map.addSource('p-wave', {
       type: 'geojson',
-      data: {
-        type: 'FeatureCollection',
-        features: []
-      }
+      data: { type: 'FeatureCollection', features: [] }
     });
     map.addLayer({
       id: 'p-wave-layer',
@@ -28,14 +23,10 @@ export function initWaveLayers(map) {
     });
   }
 
-  // S-wave circle
   if (!map.getSource('s-wave')) {
     map.addSource('s-wave', {
       type: 'geojson',
-      data: {
-        type: 'FeatureCollection',
-        features: []
-      }
+      data: { type: 'FeatureCollection', features: [] }
     });
     map.addLayer({
       id: 's-wave-layer',
@@ -52,57 +43,37 @@ export function initWaveLayers(map) {
 }
 
 /**
- * Update wave positions/radii
- * @param {maplibregl.Map} map
- * @param {Object} epicenter - {lat, lon}
- * @param {String|Date} originTime
+ * Update wave positions/radii (This is the one main.js calls)
  */
-export function updateWaves(map, epicenter, originTime) {
-  const { pRadius, sRadius } = waveRadii(originTime);
+export function waveAnimation(activeEEWs, map) {
+  if (!activeEEWs || activeEEWs.length === 0) return;
+
+  // We take the latest EEW to update the circles
+  const eew = activeEEWs[activeEEWs.length - 1];
+  const { pRadius, sRadius } = waveRadii(eew.OriginTime);
 
   const pFeature = {
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates: [epicenter.lon, epicenter.lat]
+      coordinates: [eew.Longitude, eew.Latitude]
     },
-    properties: {
-      radius: pRadius / map.getZoomScale() // adjust for map scale if needed
-    }
+    properties: { radius: pRadius }
   };
 
   const sFeature = {
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates: [epicenter.lon, epicenter.lat]
+      coordinates: [eew.Longitude, eew.Latitude]
     },
-    properties: {
-      radius: sRadius / map.getZoomScale()
-    }
+    properties: { radius: sRadius }
   };
 
-  map.getSource('p-wave').setData({
-    type: 'FeatureCollection',
-    features: [pFeature]
-  });
-
-  map.getSource('s-wave').setData({
-    type: 'FeatureCollection',
-    features: [sFeature]
-  });
-}
-
-/**
- * Starts the animation loop for the waves
- * @param {maplibregl.Map} map
- * @param {Object} epicenter - {lat, lon}
- * @param {String|Date} originTime
- */
-export function startWaveAnimation(map, epicenter, originTime) {
-  function frame() {
-    updateWaves(map, epicenter, originTime);
-    requestAnimationFrame(frame);
+  if (map.getSource('p-wave')) {
+    map.getSource('p-wave').setData({ type: 'FeatureCollection', features: [pFeature] });
   }
-  requestAnimationFrame(frame);
+  if (map.getSource('s-wave')) {
+    map.getSource('s-wave').setData({ type: 'FeatureCollection', features: [sFeature] });
+  }
 }
