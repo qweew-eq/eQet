@@ -1,0 +1,26 @@
+{
+  "package": {
+    "productName": "eQet",
+    "version": "0.1.0"
+  },
+  "tauri": {
+    "bundle": {
+      "active": true,
+      "targets": "all",
+      "identifier": "com.eqet.app",
+      "icon": [
+        "icons/icon.png"
+      ]
+    },
+    "allowlist": {
+      "all": true
+    },
+    "windows": [
+      {
+        "title": "eQet - Earthquake Early Warning",
+        "width": 800,
+        "height": 600
+      }
+    ]
+  }
+}
