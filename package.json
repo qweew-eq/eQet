@@ -1,19 +1,14 @@
 {
-  "name": "eQet",
+  "name": "eew-app",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "tauri": "tauri"
+    "preview": "vite preview"
   },
-  "dependencies": {
-    "maplibre-gl": "^4.1.1"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "vite": "^5.0.0",
-    "@tauri-apps/cli": "^2.0.0"
+    "vite": "^5.0.0"
   }
 }
