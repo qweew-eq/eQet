@@ -1,10 +1,9 @@
 name: Deploy Web and Windows
 on:
   push:
-    branches: [ main ]
+    branches: [ main ] # Make sure this matches your branch name (main or master)
 
 jobs:
-  # JOB 1: Web Deployment
   deploy-web:
     runs-on: ubuntu-latest
     steps:
@@ -21,9 +20,9 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # This command is the 'magic' that fixes the error
           command: pages deploy ./dist --project-name=eqet
 
-  # JOB 2: Windows Build
   build-windows:
     runs-on: windows-latest
     needs: deploy-web
