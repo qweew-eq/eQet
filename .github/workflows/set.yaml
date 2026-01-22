@@ -1,26 +1,28 @@
 name: Deploy Web and Windows
 on:
   push:
-    branches: [ main ] # Make sure this matches your branch name (main or master)
+    branches: [ main ]
 
 jobs:
   deploy-web:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
       
       - name: Build Web
         run: |
-          bun install
-          bun run build
+          npm install
+          npm run build
           
       - name: Deploy to Cloudflare
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # This command is the 'magic' that fixes the error
+          # This is the 'Force' command for Pages
           command: pages deploy ./dist --project-name=eqet
 
   build-windows:
@@ -31,7 +33,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: 20
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
       - name: Build Web Assets for Tauri
