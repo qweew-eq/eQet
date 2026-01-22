@@ -1,20 +1,36 @@
-name: My First Action
-# 1. Trigger: When should this run?
+name: Build Desktop App
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main" ] # Triggered when you push code to your main branch
 
-# 2. Jobs: What should happen?
 jobs:
   build:
-    # Use a GitHub-hosted runner (a virtual machine)
-    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows-latest] # You can add macos-latest or ubuntu-latest later
 
+    runs-on: ${{ matrix.platform }}
     steps:
-      # This step checks out your code so the runner can access it
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-      # This step runs a standard shell command
-      - name: Run a script
-        run: echo "Hello, GitHub Actions is working!"
+      - name: install dependencies
+        run: npm install
+
+      - name: build tauri app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: v__VERSION__ # This creates a "Release" for you
+          releaseName: "eQet Release v__VERSION__"
+          releaseBody: "Automated build from mobile."
+          releaseDraft: true
+          prerelease: false
