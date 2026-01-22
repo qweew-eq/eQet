@@ -1,4 +1,4 @@
-import './style.css';
+import './styles.css';
 import { initMap } from './map/map.js';
 import { connectWolfx } from './ws/wolfx.js';
 import { waveAnimation } from './ui/waves.js';
