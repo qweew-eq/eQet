@@ -1,13 +1,13 @@
 [package]
 name = "eqet"
 version = "0.1.0"
-description = "Earthquake Early Warning System"
-authors = ["Your Name"]
+description = "¯\_(ツ)_/¯"
+authors = ["CurrentEEW"]
 edition = "2021"
 rust-version = "1.57"
 
 [build-dependencies]
-tauri-build = { version = "1.5" }
+tauri-build = { version = "1.5", features = [] }
 
 [dependencies]
 serde_json = "1.0"
