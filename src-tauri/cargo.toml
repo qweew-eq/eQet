@@ -1,7 +1,7 @@
 [package]
 name = "eqet"
 version = "0.1.0"
-description = "¯\_(ツ)_/¯"
+description = "¯\\_(ツ)_/¯"
 authors = ["CurrentEEW"]
 edition = "2021"
 rust-version = "1.57"
