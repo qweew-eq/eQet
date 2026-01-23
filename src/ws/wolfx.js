@@ -1,14 +1,37 @@
-export function connectWolfx(onEEW) {
-  const ws = new WebSocket('wss://ws-api.wolfx.jp/all_eew');
-  ws.onmessage = (msg) => {
-    try {
-      const data = JSON.parse(msg.data);
-      // Wolfx usually sends 'eew' or 'jma_eew'
-      if (data.type === 'eew' || data.type === 'jma_eew') {
-        onEEW(data); // Pass the raw data so the names match your other files
+import { connectWolfx } from './wolfx.js';
+import { updatePanel } from '../ui/panel.js';
+import { updateEpicenter } from '../map/marker.js';
+import { autoPan } from '../map/autopan.js';
+import { AudioPlayer } from '../ui/alerts.js';
+
+export const eewManager = {
+  activeEEWs: [],
+
+  async start(map) {
+    await this.fetchHistory(map);
+
+    connectWolfx((eew) => {
+      if (eew.isCancel) {
+        this.activeEEWs = [];
+      } else {
+        this.activeEEWs = [eew];
       }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-}
+
+      updatePanel(eew);
+      updateEpicenter(eew, map);
+      AudioPlayer(eew);
+      
+      // Don't autoPan if it's a cancellation (marker handles zoom out)
+      if (!eew.isCancel) autoPan(map, eew);
+    });
+  },
+
+  async fetchHistory(map) {
+    try {
+      const res = await fetch('https://api.wolfx.jp/jma_eew.json');
+      const data = await res.json();
+      if (data) updatePanel(data);
+      autoPan(map, null); // Start overview
+    } catch (e) { autoPan(map, null); }
+  }
+};
