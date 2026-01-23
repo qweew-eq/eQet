@@ -3,7 +3,7 @@
 <table frame="none" border="0">
   <tr>
     <td align="center" style="border: none;">
-      <img src="public/logo.png" width="100" height="100" alt="eQet Logo">
+      <img src="public/icon.png" width="100" height="100" alt="eQet Logo">
     </td>
     <td style="border: none;">
       <h1 align="left">eQet — 地震早期警戒システム</h1>
