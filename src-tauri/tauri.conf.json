@@ -7,7 +7,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.eqet.app",
+      "identifier": "net.eew.eqet",
       "icon": [
         "icons/icon.png"
       ]
@@ -17,7 +17,7 @@
     },
     "windows": [
       {
-        "title": "eQet - Earthquake Early Warning",
+        "title": "eQet",
         "width": 800,
         "height": 600,
         "resizable": true
