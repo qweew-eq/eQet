@@ -21,8 +21,9 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        # Direct command bypasses the "guessing" bugs of the action
-        run: npx wrangler@latest pages deploy ./dist --project-name=eqet-eew --commit-dirty=true --yes
+        run: | 
+          npx wrangler@latest pages project create eqet-eew --production-branch main || true
+          npx wrangler@latest pages deploy ./dist --project-name=eqet-eew --commit-dirty=true
 
   build-windows:
     runs-on: windows-latest
@@ -40,7 +41,6 @@ jobs:
           npm install
           npm run build
       - name: Build Tauri App
-        # Updated to v1 for 2026 compatibility
         uses: tauri-apps/tauri-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
