@@ -1,9 +1,165 @@
-body {
+/* --- BASE & MAP --- */
+body, html {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: #111;
-  color: #eee;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #0f1115;
 }
-#map { position: absolute; top:0; left:0; width:100%; height:100%; }
-#panel { position: absolute; top: 10px; left: 10px; width: 320px; background: #222; border-radius: 8px; padding: 10px; }
-.station-dot { border-radius: 50%; }
+
+#map {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* --- EEW PANEL LAYOUT --- */
+#eew-panel {
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 350px; 
+  height: 100vh;
+  background: rgba(30, 35, 45, 0.9); 
+  color: white; 
+  display: flex; 
+  z-index: 1000;
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", sans-serif; 
+  box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Sidebar Icon Gutter */
+.icon-gutter {
+  width: 60px; 
+  background: rgba(0, 0, 0, 0.3);
+  display: flex; 
+  flex-direction: column; 
+  align-items: center;
+  padding-top: 20px; 
+  gap: 25px;
+}
+
+.side-icon { 
+  width: 30px; 
+  height: 30px; 
+  cursor: pointer; 
+  opacity: 0.8; 
+  transition: opacity 0.2s;
+}
+
+.side-icon:hover { 
+  opacity: 1; 
+}
+
+/* Main Panel Content Area */
+.panel-content { 
+  flex-grow: 1; 
+  padding: 25px 20px; 
+  display: flex; 
+  flex-direction: column; 
+}
+
+/* The Warning/Forecast Pill */
+.alert-pill {
+  padding: 8px 20px; 
+  border-radius: 50px; 
+  font-weight: 900;
+  margin-bottom: 25px; 
+  text-align: center; 
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  font-size: 14px;
+}
+
+/* Intensity and Metadata */
+.intensity-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.shindo-img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+}
+
+.meta-info {
+  text-align: right;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.location-text {
+  font-size: 26px;
+  font-weight: bold;
+  margin: 15px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 10px;
+}
+
+/* --- MARKER ANIMATION MODES --- */
+
+/* Mode 1: Sharp Blink */
+@keyframes marker-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.1; }
+}
+
+/* Mode 2: Smooth Fade (Breathing) */
+@keyframes marker-fade {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; } /* "a bit visible" */
+}
+
+.marker-style-blink { animation: marker-blink 0.8s infinite; }
+.marker-style-fade { animation: marker-fade 2.2s infinite ease-in-out; }
+
+.epicenter-marker { 
+  width: 50px; 
+  height: 50px; 
+  background-size: 100%; 
+  cursor: pointer; 
+  filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+}
+
+/* --- MOBILE RESPONSIVENESS --- */
+@media (max-width: 768px) {
+  #eew-panel {
+    width: 100vw;
+    height: 40vh;
+    top: auto;
+    bottom: 0;
+    flex-direction: column-reverse;
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+  }
+
+  .icon-gutter {
+    width: 100%;
+    height: 60px;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0;
+    gap: 0;
+  }
+
+  .panel-content {
+    padding: 15px;
+    overflow-y: auto;
+  }
+
+  .shindo-img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .location-text {
+    font-size: 22px;
+  }
+
+  .epicenter-marker {
+    width: 35px;
+    height: 35px;
+  }
+}
