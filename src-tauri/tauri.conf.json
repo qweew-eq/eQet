@@ -9,7 +9,7 @@
       "targets": "all",
       "identifier": "net.eew.eqet",
       "icon": [
-        "icons/icon.png"
+        "icons/icon.ico"
       ]
     },
     "allowlist": {
