@@ -5,6 +5,7 @@ description = "¯\\_(ツ)_/¯"
 authors = ["CurrentEEW"]
 edition = "2021"
 rust-version = "1.57"
+build = "build.rs" 
 
 [build-dependencies]
 tauri-build = { version = "1.5", features = [] }
