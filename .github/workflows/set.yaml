@@ -44,3 +44,8 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: app-v__VERSION__
+          releaseName: 'eQet Release v__VERSION__'
+          releaseDraft: true
+          prerelease: false
