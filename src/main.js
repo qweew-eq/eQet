@@ -12,22 +12,21 @@ const map = initMap();
 // Active earthquakes array
 let activeEEWs = [];
 
-// Wolfx WebSocket connection
-connectWolfx((eew) => {
-  // Add to active EEWs
-  activeEEWs.push(eew);
+// WAIT for the map to be ready before doing anything else
+map.on('load', () => {
+  console.log("Map is ready! Starting EEW logic...");
 
-  // Update panel UI
-  updatePanel(eew);
+  // Wolfx WebSocket connection
+  connectWolfx((eew) => {
+    activeEEWs.push(eew);
+    updatePanel(eew);
+    playAlert(eew);
+  });
 
-  // Play alerts based on intensity / type
-  playAlert(eew);
-  
+  // Start animation loop ONLY after map is loaded
+  function animate() {
+    waveAnimation(activeEEWs, map);
+    requestAnimationFrame(animate);
+  }
+  animate();
 });
-
-// Animation loop for S/P wave propagation
-function animate() {
-  waveAnimation(activeEEWs, map);
-  requestAnimationFrame(animate);
-}
-animate();
