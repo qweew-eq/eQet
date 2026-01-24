@@ -10,8 +10,8 @@ const MAXINT_IMAGES = {
 const P2P_SHINDO = { 10: '1', 20: '2', 30: '3', 40: '4', 45: '5-', 50: '5+', 55: '6-', 60: '6+', 70: '7' };
 
 export function updatePanel(eew, history = []) {
-  const panel = document.getElementById('eew-panel');
-  if (!panel) return;
+  const contentArea = document.getElementById('dynamic-content');
+  if (!contentArea) return;
 
   if (eew) AudioPlayer(eew);
 
@@ -32,22 +32,12 @@ export function updatePanel(eew, history = []) {
       </div>`;
   }).join('');
 
-  panel.innerHTML = `
-    <div class="icon-gutter">
-      <img src="/icon.png" class="side-icon active-icon" alt="Home">
-      <img src="/images/imagesicon/shake.png" class="side-icon" alt="Shake">
-      <img src="/images/imagesicon/info.png" class="side-icon" alt="Info">
-      <img src="/images/imagesicon/wave.png" class="side-icon" alt="Wave">
-      <div style="flex-grow: 1;"></div>
-      <img src="/images/imagesicon/settings.png" class="side-icon" id="settings-btn" style="margin-bottom: 20px;" alt="Settings">
-    </div>
-
-    <div class="panel-content">
-      <div class="alert-pill" style="background: ${pillColor};">${reportTitle}</div>
+  contentArea.innerHTML = `
+      <div class="alert-pill" style="background: ${pillColor}; text-align:center; padding:10px; border-radius:8px; font-weight:900; margin-bottom:20px;">${reportTitle}</div>
 
       ${eew ? `
         <div style="display: flex; gap: 15px; align-items: flex-start; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px;">
-          <img src="/shindoimg/panelintensity/${imgName}" class="shindo-img">
+          <img src="/shindoimg/panelintensity/${imgName}" style="width:80px; height:80px;">
           <div style="font-size: 13px;">
             <span style="font-size: 18px; font-weight: bold; display: block;">${eew.Hypocenter}</span>
             M ${eew.Magunitude} / 深さ ${eew.Depth}km
@@ -58,8 +48,6 @@ export function updatePanel(eew, history = []) {
       <div style="margin-top: 20px;">
         <div style="font-size: 11px; color: #888; margin-bottom: 8px;">過去の地震</div>
         <div id="history-list">${historyHtml}</div>
-        <div id="status-log"></div>
       </div>
-    </div>
   `;
 }
