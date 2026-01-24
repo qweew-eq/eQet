@@ -7,7 +7,32 @@
   </head>
   <body>
     <div id="map"></div>
-    <div id="eew-panel"></div>
+    
+    <div id="eew-panel">
+      <div class="icon-gutter">
+        <img src="/icon.png" class="side-icon" id="logo-icon" alt="Logo">
+        <img src="/images/imagesicon/shake.png" class="side-icon nav-btn active-icon" id="shake-btn" alt="Shake">
+        <img src="/images/imagesicon/info.png" class="side-icon nav-btn" id="info-btn" alt="Info">
+        <img src="/images/imagesicon/wave.png" class="side-icon nav-btn" id="wave-btn" alt="Wave">
+        
+        <div class="spacer"></div>
+        
+        <img src="/images/imagesicon/settings.png" class="side-icon" id="settings-btn" alt="Settings">
+      </div>
+      
+      <div id="dynamic-content" class="panel-content">
+        <div style="padding: 20px; color: #888; text-align: center;">Initializing system...</div>
+      </div>
+    </div>
+
+    <div id="settings-overlay" style="display:none;">
+       <div class="settings-window">
+          <h2 style="margin-top:0;">App Settings</h2>
+          <p>Cross Animation: <span id="current-style">FADE</span></p>
+          <button id="exit-door" style="padding: 10px 20px; cursor: pointer;">Save and Exit </button>
+       </div>
+    </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
