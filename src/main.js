@@ -4,22 +4,39 @@ import { eewManager } from './ws/eewManager.js';
 import { waveAnimation } from './ui/waves.js';
 
 const map = initMap();
-
-// Start the system immediately to populate the panel
 eewManager.start(map);
 
-map.on('load', () => {
-  const settingsBtn = document.getElementById('settings-btn');
-  if (settingsBtn) {
-    settingsBtn.onclick = () => {
-      const current = localStorage.getItem('markerStyle') === 'fade' ? 'blink' : 'fade';
-      localStorage.setItem('markerStyle', current);
-      alert(`Settings: Cross Animation is now ${current.toUpperCase()}`);
-    };
-  }
+// 1. SETTINGS LOGIC
+const settingsBtn = document.getElementById('settings-btn');
+const settingsOverlay = document.getElementById('settings-overlay');
+const exitBtn = document.getElementById('exit-door');
 
+settingsBtn.onclick = () => {
+    // Toggle marker style logic
+    const current = localStorage.getItem('markerStyle') === 'fade' ? 'blink' : 'fade';
+    localStorage.setItem('markerStyle', current);
+    document.getElementById('current-style').innerText = current.toUpperCase();
+    
+    // Show UI
+    settingsOverlay.style.display = 'flex';
+};
+
+exitBtn.onclick = () => {
+    settingsOverlay.style.display = 'none';
+};
+
+// 2. MOVING HIGHLIGHT LOGIC
+const navButtons = document.querySelectorAll('.nav-btn');
+navButtons.forEach(btn => {
+  btn.onclick = () => {
+    navButtons.forEach(b => b.classList.remove('active-icon'));
+    btn.classList.add('active-icon');
+  };
+});
+
+// 3. ANIMATION LOOP
+map.on('load', () => {
   function animate() {
-    // Uses the array we defined in eewManager
     waveAnimation(eewManager.activeEEWs, map);
     requestAnimationFrame(animate);
   }
