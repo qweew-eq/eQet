@@ -1,107 +1,73 @@
-/* --- BASE & MAP --- */
 body, html {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
   overflow: hidden;
+  font-family: 'Inter', sans-serif;
   background-color: #0f1115;
 }
 
-#map {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1;
-}
+#map { position: absolute; width: 100vw; height: 100vh; z-index: 1; }
 
-/* --- EEW PANEL LAYOUT (PC Default) --- */
 #eew-panel {
-  position: fixed !important; 
-  top: 0; 
-  left: 0; 
-  width: 350px; 
-  height: 100vh;
-  background: rgba(25, 30, 40, 0.95); 
-  color: white; 
-  display: flex; 
-  flex-direction: row;
-  z-index: 9999 !important; 
+  position: fixed; top: 0; left: 0;
+  width: 350px; height: 100vh;
+  background: rgba(25, 30, 40, 0.95);
+  color: white;
+  display: flex; flex-direction: row;
+  z-index: 999;
   box-shadow: 4px 0 15px rgba(0,0,0,0.5);
   backdrop-filter: blur(8px);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ICON SIDEBAR */
 .icon-gutter {
-  width: 70px; 
+  width: 70px;
   background: rgba(0, 0, 0, 0.4);
-  display: flex; 
-  flex-direction: column; 
+  display: flex; flex-direction: column;
   align-items: center;
-  padding-top: 20px; 
-  gap: 15px;
-  flex-shrink: 0;
+  padding: 20px 0; gap: 10px;
 }
 
-.side-icon { 
-  width: 28px; 
-  height: 28px; 
-  cursor: pointer; 
-  padding: 12px;
-  border-radius: 15px;
-  opacity: 0.7; 
-  transition: all 0.2s ease;
+.spacer { flex-grow: 1; }
+
+.side-icon {
+  width: 26px; height: 26px;
+  padding: 12px; cursor: pointer;
+  border-radius: 12px; opacity: 0.6;
+  transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.side-icon:hover { opacity: 1; background: rgba(255,255,255,0.05); }
+
+/* ACTIVE HIGHLIGHT */
 .active-icon {
-  background: rgba(255, 255, 255, 0.2) !important;
-  opacity: 1;
+  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  transform: scale(1.05);
 }
 
-.panel-content { 
-  flex-grow: 1; 
-  padding: 20px; 
-  display: flex; 
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-/* --- MOBILE OPTIMIZATION --- */
+/* MOBILE ADAPTATION */
 @media (max-width: 600px) {
   #eew-panel {
-    width: 100vw;
-    height: auto;
-    max-height: 45vh;
-    top: auto;
-    bottom: 0;
+    width: 100vw; height: auto; max-height: 45vh;
+    top: auto; bottom: 0;
     flex-direction: column-reverse;
-    border-right: none;
-    border-top: 1px solid rgba(255,255,255,0.1);
   }
-
   .icon-gutter {
-    width: 100%;
-    height: 60px;
-    flex-direction: row;
+    width: 100%; height: 60px;
+    flex-direction: row; padding: 0;
     justify-content: space-around;
-    padding: 0;
   }
+  .spacer { display: none; } /* Kills the gap that pushes gear too high */
 }
 
-/* --- SHINDO/INTENSITY PILLS --- */
-.alert-pill {
-  padding: 10px; 
-  border-radius: 8px; 
-  font-weight: 900;
-  margin-bottom: 20px; 
-  text-align: center; 
-  font-size: 14px;
+/* SETTINGS UI */
+#settings-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.85); z-index: 10000;
+  display: flex; justify-content: center; align-items: center;
 }
-
-.shindo-img {
-  width: 80px;
-  height: 80px;
+.settings-window {
+  background: #1e222d; padding: 40px; border-radius: 24px;
+  color: white; text-align: center; border: 1px solid rgba(255,255,255,0.1);
 }
