@@ -5,11 +5,11 @@ import { waveAnimation } from './ui/waves.js';
 
 const map = initMap();
 
-map.on('load', async () => {
-  await eewManager.start(map);
+// Start the system immediately to populate the panel
+eewManager.start(map);
 
-  // Settings Gear Click Logic
-  const settingsBtn = document.querySelector('.side-icon[src*="settings.png"]');
+map.on('load', () => {
+  const settingsBtn = document.getElementById('settings-btn');
   if (settingsBtn) {
     settingsBtn.onclick = () => {
       const current = localStorage.getItem('markerStyle') === 'fade' ? 'blink' : 'fade';
@@ -19,6 +19,7 @@ map.on('load', async () => {
   }
 
   function animate() {
+    // Uses the array we defined in eewManager
     waveAnimation(eewManager.activeEEWs, map);
     requestAnimationFrame(animate);
   }
