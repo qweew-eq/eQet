@@ -4,7 +4,7 @@ on:
     branches: [ main ]
 
 jobs:
-    deploy-web:
+  deploy-web:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,6 +22,7 @@ jobs:
           npm install
           npm run build
           npx wrangler@latest pages deploy ./dist --project-name=eqet-eew --branch main --commit-dirty=true
+
   build-windows:
     runs-on: windows-latest
     needs: deploy-web
