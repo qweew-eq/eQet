@@ -8,6 +8,10 @@ const MAXINT_IMAGES = {
 };
 
 const P2P_SHINDO = { 10: '1', 20: '2', 30: '3', 40: '4', 45: '5-', 50: '5+', 55: '6-', 60: '6+', 70: '7' };
+const formatDepth = (d) => {
+        if (d === 0 || d === "0" || d === "Very Shallow") return "ごく浅い";
+        return `約${d}km`;
+    };
 
 export function updatePanel(eew, history = []) {
   const contentArea = document.getElementById('dynamic-content');
