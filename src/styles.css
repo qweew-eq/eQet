@@ -4,10 +4,58 @@
   --panel-bg: rgba(20, 24, 30, 0.98);
 }
 
+body, html {
+  margin: 0; padding: 0; 
+  width: 100%; height: 100%;
+  background: var(--bg-dark);
+  overflow: hidden; /* Prevents the whole page from scrolling */
+}
+
 #eew-panel {
-  position: fixed; top: 0; left: 0; width: 350px; height: 100vh;
-  background: var(--panel-bg); z-index: 999; display: flex;
-  backdrop-filter: blur(10px); border-right: 1px solid rgba(255,255,255,0.1);
+  position: fixed; top: 0; left: 0; 
+  width: 350px; height: 100vh;
+  background: var(--panel-bg); 
+  z-index: 999; 
+  display: flex; /* Sidebar split into Gutter and Content */
+  backdrop-filter: blur(10px); 
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+/* --- THE FIX: ICON GUTTER --- */
+.icon-gutter {
+  width: 60px;
+  min-width: 60px; /* Force it to stay 60px */
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 0;
+  gap: 10px;
+  flex-shrink: 0; /* Prevents content from squishing the gutter */
+}
+
+.side-icon {
+  width: 28px !important; /* Forces the giant icons to shrink */
+  height: 28px !important;
+  object-fit: contain;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: 0.2s;
+  flex-shrink: 0;
+}
+
+.active-icon {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+/* --- CONTENT AREA --- */
+#dynamic-content {
+  flex: 1; /* Takes up the remaining 290px of the 350px width */
+  padding: 15px;
+  overflow-y: auto; /* Allow history to scroll within the panel */
 }
 
 .alert-pill {
@@ -15,8 +63,8 @@
   font-weight: 900; margin-bottom: 20px; color: white;
 }
 
-.pill-idle { color: #00d9ff; border: 1px solid #00d9ff; }
-.pill-forecast { color: #000; }
+.pill-idle { color: #00d9ff; border: 1px solid #00d9ff; background: rgba(0, 217, 255, 0.05); }
+.pill-forecast { color: #000; background: #ff8c00; }
 .pill-warning { animation: flash-red 1s infinite; }
 
 @keyframes flash-red {
@@ -25,20 +73,26 @@
 }
 
 .eew-display-box {
-  display: flex; gap: 15px; align-items: flex-start;
-  background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px;
+  display: flex; gap: 12px; align-items: flex-start;
+  background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px;
 }
 
-.main-shindo-img { width: 80px; height: 80px; }
-.hypo-title { font-size: 18px; font-weight: bold; display: block; margin-bottom: 5px; }
+.main-shindo-img { width: 75px; height: 75px; flex-shrink: 0; }
+.hypo-title { font-size: 18px; font-weight: bold; display: block; margin-bottom: 5px; color: #fff; }
 .mag-depth-text { font-size: 13px; color: #ccc; }
 
-.section-label { font-size: 11px; color: #888; margin: 25px 0 8px 0; }
+.section-label { font-size: 11px; color: #888; margin: 25px 0 8px 0; text-transform: uppercase; letter-spacing: 1px; }
+
 .history-item { 
   display: flex; align-items: center; gap: 10px; 
   background: rgba(255,255,255,0.05); padding: 8px; 
   border-radius: 6px; margin-bottom: 8px; 
 }
 
-.history-shindo-icon { width: 30px; height: 30px; }
-.jquake-main-text { padding: 10px; color: #888; text-align: center; font-size: 14px; }
+.history-shindo-icon { width: 30px; height: 30px; flex-shrink: 0; }
+.jquake-main-text { padding: 10px; color: #888; text-align: center; font-size: 13px; }
+
+/* Clock & Status (Bottom Right) */
+#bottom-right-status { position: fixed; bottom: 20px; right: 20px; text-align: right; z-index: 1000; }
+#jst-clock { font-size: 22px; font-weight: bold; font-family: monospace; color: #fff; }
+#server-status { font-size: 10px; color: #00ff66; opacity: 0.8; }
