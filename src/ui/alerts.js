@@ -5,12 +5,16 @@ export function AudioPlayer(eew) {
   const updateKey = `${eew.EventID}_${eew.Serial}`;
 
   // 1. CANCELLATION CHAIN (Tone -> Voice)
-  if (eew.isCancel) {
+  if (eew.isCancel || eew.is_cancel) {
     const cancelTone = new Audio('/sounds/cancel.wav');
     const cancelVoice = new Audio('/sounds/aloudcancel.wav');
-    cancelTone.play().catch(() => {});
-    // Wait for tone to finish before playing voice
-    cancelTone.onended = () => cancelVoice.play().catch(() => {});
+    
+    cancelTone.play().catch(e => console.warn("Cancel tone failed:", e));
+    
+    // Play voice immediately after tone ends
+    cancelTone.onended = () => {
+      cancelVoice.play().catch(e => console.warn("aloudcancel.wav not found or failed:", e));
+    };
     return;
   }
 
@@ -19,9 +23,9 @@ export function AudioPlayer(eew) {
   lastUpdateKey = updateKey;
 
   // 2. REPORT TYPE SOUNDS (Priority: Final > New > Update)
-  if (eew.isFinal) {
+  if (eew.isFinal || eew.is_final) {
     new Audio('/sounds/lastupd.wav').play().catch(() => {});
-  } else if (eew.Serial === 1) {
+  } else if (parseInt(eew.Serial) === 1) {
     new Audio('/sounds/eq.wav').play().catch(() => {});
   } else {
     new Audio('/sounds/update.wav').play().catch(() => {});
@@ -36,19 +40,23 @@ export function AudioPlayer(eew) {
 
     // Threshold: 3 or 4
     if (maxInt === '3' || maxInt === '4') {
-      new Audio('/sounds/3upper.wav').play().catch(() => {});
+      setTimeout(() => {
+        new Audio('/sounds/3upper.wav').play().catch(() => {});
+      }, 600);
     }
 
     // Threshold: Warning level (Red Pill)
-    if (eew.isWarn) {
-      new Audio('/sounds/warn.wav').play().catch(() => {});
+    if (eew.isWarn || eew.is_warn) {
+      setTimeout(() => {
+        new Audio('/sounds/warn.wav').play().catch(() => {});
+      }, 1200);
     }
   } else if (maxInt === 'FUMEI') {
     new Audio('/sounds/unk.wav').play().catch(() => {});
   }
 
-  // 4. SPECIALS
-  if (eew.isAssumption) {
+  // 4. SPECIALS (PLUM / Assumption)
+  if (eew.isAssumption || eew.is_plum) {
     new Audio('/sounds/PLUM.wav').play().catch(() => {});
   }
 }
