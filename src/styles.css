@@ -1,94 +1,44 @@
-body, html {
-  margin: 0; padding: 0;
-  width: 100%; height: 100%;
-  overflow: hidden;
-  font-family: 'Inter', sans-serif;
-  background-color: #0f1115;
+/* src/styles.css */
+:root {
+  --bg-dark: #0f1115;
+  --panel-bg: rgba(20, 24, 30, 0.98);
 }
-
-#map { position: absolute; width: 100vw; height: 100vh; z-index: 1; }
 
 #eew-panel {
-  position: fixed; top: 0; left: 0;
-  width: 350px; height: 100vh;
-  background: rgba(25, 30, 40, 0.95);
-  color: white;
-  display: flex; flex-direction: row;
-  z-index: 999;
-  box-shadow: 4px 0 15px rgba(0,0,0,0.5);
-  backdrop-filter: blur(8px);
+  position: fixed; top: 0; left: 0; width: 350px; height: 100vh;
+  background: var(--panel-bg); z-index: 999; display: flex;
+  backdrop-filter: blur(10px); border-right: 1px solid rgba(255,255,255,0.1);
 }
 
-/* ICON SIDEBAR */
-/* Fix for the icon-gutter to ensure everything fits */
-.icon-gutter {
-  height: 100dvh; /* Use dynamic viewport height for tablets/mobile */
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* Pushes settings to the absolute bottom */
-  align-items: center;
-  padding: 15px 0;
-  background: rgba(0, 0, 0, 0.7);
-  box-sizing: border-box; /* Prevents padding from adding to height */
+.alert-pill {
+  text-align: center; padding: 10px; border-radius: 8px;
+  font-weight: 900; margin-bottom: 20px; color: white;
 }
 
-.nav-group {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
+.pill-idle { color: #00d9ff; border: 1px solid #00d9ff; }
+.pill-forecast { color: #000; }
+.pill-warning { animation: flash-red 1s infinite; }
+
+@keyframes flash-red {
+  0%, 100% { background: #ff0000; }
+  50% { background: #800000; }
 }
 
-#settings-btn {
-  margin-bottom: 10px; /* Ensures it's not touching the very edge */
-  cursor: pointer;
-  transition: opacity 0.2s;
+.eew-display-box {
+  display: flex; gap: 15px; align-items: flex-start;
+  background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px;
 }
 
-#settings-btn:active {
-  opacity: 0.5;
+.main-shindo-img { width: 80px; height: 80px; }
+.hypo-title { font-size: 18px; font-weight: bold; display: block; margin-bottom: 5px; }
+.mag-depth-text { font-size: 13px; color: #ccc; }
+
+.section-label { font-size: 11px; color: #888; margin: 25px 0 8px 0; }
+.history-item { 
+  display: flex; align-items: center; gap: 10px; 
+  background: rgba(255,255,255,0.05); padding: 8px; 
+  border-radius: 6px; margin-bottom: 8px; 
 }
 
-.spacer { flex-grow: 1; }
-
-.side-icon {
-  width: 26px; height: 26px;
-  padding: 12px; cursor: pointer;
-  border-radius: 12px; opacity: 0.6;
-  transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.side-icon:hover { opacity: 1; background: rgba(255,255,255,0.05); }
-
-/* ACTIVE HIGHLIGHT */
-.active-icon {
-  opacity: 1 !important;
-  background: rgba(255, 255, 255, 0.15) !important;
-  transform: scale(1.05);
-}
-
-/* MOBILE ADAPTATION */
-@media (max-width: 600px) {
-  #eew-panel {
-    width: 100vw; height: auto; max-height: 45vh;
-    top: auto; bottom: 0;
-    flex-direction: column-reverse;
-  }
-  .icon-gutter {
-    width: 100%; height: 60px;
-    flex-direction: row; padding: 0;
-    justify-content: space-around;
-  }
-  .spacer { display: none; } /* Kills the gap that pushes gear too high */
-}
-
-/* SETTINGS UI */
-#settings-overlay {
-  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.85); z-index: 10000;
-  display: flex; justify-content: center; align-items: center;
-}
-.settings-window {
-  background: #1e222d; padding: 40px; border-radius: 24px;
-  color: white; text-align: center; border: 1px solid rgba(255,255,255,0.1);
-}
+.history-shindo-icon { width: 30px; height: 30px; }
+.jquake-main-text { padding: 10px; color: #888; text-align: center; font-size: 14px; }
