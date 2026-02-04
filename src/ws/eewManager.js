@@ -1,46 +1,54 @@
+// src/ws/eewManager.js
 import { connectWolfx } from './wolfx.js';
 import { updatePanel } from '../ui/panel.js';
-import { updateEpicenter } from '../map/marker.js';
-import { autoPan } from '../map/autopan.js';
-import { tsunamiManager } from './tsunamiManager.js';
 
 export const eewManager = {
-  activeEEWs: [], 
+  activeEEW: null,
   historyQuakes: [],
+  expiryTime: null,
 
   async start(map) {
     await this.fetchEqHistory();
 
-    connectWolfx((eew) => {
-      this.activeEEWs = eew.isCancel ? [] : [eew];
-      updatePanel(eew, this.historyQuakes);
-      updateEpicenter(eew, map);
-      if (!eew.isCancel) autoPan(map, eew);
+    // Wolfx: EEW (Strings: "5-", "6+")
+    connectWolfx((data) => {
+      if (data.is_cancel || data.isCancel) {
+        this.activeEEW = null;
+        this.expiryTime = null;
+      } else {
+        this.activeEEW = data;
+        // Keep Final reports on screen for 5 mins
+        this.expiryTime = (data.is_final || data.isFinal) ? Date.now() + 300000 : null;
+      }
+      this.refresh();
     });
 
     this.connectP2PWS();
   },
 
+  refresh() {
+    updatePanel(this.getActiveDisplay(), this.historyQuakes);
+  },
+
+  getActiveDisplay() {
+    if (this.expiryTime && Date.now() > this.expiryTime) this.activeEEW = null;
+    return this.activeEEW;
+  },
+
   async fetchEqHistory() {
-    try {
-      const res = await fetch('https://api.p2pquake.net/v2/history?codes=551&limit=4');
-      this.historyQuakes = await res.json();
-      updatePanel(null, this.historyQuakes);
-    } catch (e) {
-      updatePanel(null, []);
-    }
+    const res = await fetch('https://api.p2pquake.net/v2/history?codes=551&limit=5');
+    this.historyQuakes = await res.json();
+    this.refresh();
   },
 
   connectP2PWS() {
     const ws = new WebSocket('wss://api.p2pquake.net/v2/ws');
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.code === 551) {
-        this.historyQuakes.unshift(data);
-        this.historyQuakes = this.historyQuakes.slice(0, 4);
-        updatePanel(this.activeEEWs[0] || null, this.historyQuakes);
-      } else if (data.code === 552) {
-        tsunamiManager.handleTsunami(data);
+    ws.onmessage = (e) => {
+      const d = JSON.parse(e.data);
+      if (d.code === 551) {
+        this.historyQuakes.unshift(d);
+        this.historyQuakes = this.historyQuakes.slice(0, 5);
+        this.refresh();
       }
     };
     ws.onclose = () => setTimeout(() => this.connectP2PWS(), 5000);
