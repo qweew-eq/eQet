@@ -1,44 +1,56 @@
+// src/main.js
 import './styles.css';
 import { initMap } from './map/map.js';
 import { eewManager } from './ws/eewManager.js';
 import { waveAnimation } from './ui/waves.js';
+import { updatePanel } from './ui/panel.js';
+import { renderMotionPanel } from './motion/motionPanel.js';
+import { motionManager } from './motion/motionManager.js';
 
 const map = initMap();
 eewManager.start(map);
 
-// 1. SETTINGS LOGIC
-const settingsBtn = document.getElementById('settings-btn');
-const settingsOverlay = document.getElementById('settings-overlay');
-const exitBtn = document.getElementById('exit-door');
+// NAVIGATION & VIEW SWITCHING
+const navIcons = document.querySelectorAll('.side-icon');
+navIcons.forEach(icon => {
+  icon.onclick = () => {
+    navIcons.forEach(i => i.classList.remove('active-icon'));
+    icon.classList.add('active-icon');
+    const view = icon.getAttribute('alt').toLowerCase();
 
-settingsBtn.onclick = () => {
-    // Toggle marker style logic
-    const current = localStorage.getItem('markerStyle') === 'fade' ? 'blink' : 'fade';
-    localStorage.setItem('markerStyle', current);
-    document.getElementById('current-style').innerText = current.toUpperCase();
-    
-    // Show UI
-    settingsOverlay.style.display = 'flex';
-};
-
-exitBtn.onclick = () => {
-    settingsOverlay.style.display = 'none';
-};
-
-// 2. MOVING HIGHLIGHT LOGIC
-const navButtons = document.querySelectorAll('.nav-btn');
-navButtons.forEach(btn => {
-  btn.onclick = () => {
-    navButtons.forEach(b => b.classList.remove('active-icon'));
-    btn.classList.add('active-icon');
+    if (view === 'motion') {
+      renderMotionPanel();
+      motionManager.init();
+    } else {
+      updatePanel(eewManager.getActiveDisplay(), eewManager.historyQuakes, view);
+    }
   };
 });
 
-// 3. ANIMATION LOOP
+// SETTINGS OVERLAY
+document.getElementById('settings-btn').onclick = () => {
+  const current = localStorage.getItem('markerStyle') === 'fade' ? 'blink' : 'fade';
+  localStorage.setItem('markerStyle', current);
+  document.getElementById('current-style').innerText = current.toUpperCase();
+  document.getElementById('settings-overlay').style.display = 'flex';
+};
+
+document.getElementById('exit-door').onclick = () => {
+  document.getElementById('settings-overlay').style.display = 'none';
+};
+
+// JST CLOCK
+setInterval(() => {
+  const jst = new Date(new Date().getTime() + (new Date().getTimezoneOffset() * 60000) + (9 * 3600000));
+  document.getElementById('jst-clock').innerText = jst.toLocaleString('ja-JP').replace(/-/g, '/');
+}, 1000);
+
+// ANIMATION LOOP
 map.on('load', () => {
-  function animate() {
-    waveAnimation(eewManager.activeEEWs, map);
+  const animate = () => {
+    const active = eewManager.getActiveDisplay();
+    if (active) waveAnimation([active], map);
     requestAnimationFrame(animate);
-  }
+  };
   animate();
 });
