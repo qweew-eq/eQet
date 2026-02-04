@@ -12,6 +12,8 @@
   </tr>
 </table>
 
+[![Deploy Web and Windows](https://github.com/qweew-eq/eQet/actions/workflows/set.yaml/badge.svg)](https://github.com/qweew-eq/eQet/actions/workflows/set.yaml)
+
 [![Build](https://img.shields.io/badge/Build-Tauri-blueviolet?style=flat-square)](https://github.com/qweew-eq/eQet/actions)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Web-blue?style=flat-square)](https://github.com/qweew-eq/eQet/releases)
 [![Version](https://img.shields.io/badge/Version-0.1.0-orange?style=flat-square)](https://github.com/qweew-eq/eQet/releases)
