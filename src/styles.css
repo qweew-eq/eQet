@@ -1,49 +1,39 @@
-/* src/styles.css */
-:root {
-  --bg-dark: #0f1115;
-  --panel-bg: rgba(20, 24, 30, 0.98);
-}
-
-body, html {
-  margin: 0; padding: 0; 
-  width: 100%; height: 100%;
-  background: var(--bg-dark);
-  overflow: hidden; /* Prevents the whole page from scrolling */
-}
-
+/* --- Base Styles (Desktop) --- */
 #eew-panel {
-  position: fixed; top: 0; left: 0; 
-  width: 350px; height: 100vh;
-  background: var(--panel-bg); 
-  z-index: 999; 
-  display: flex; /* Sidebar split into Gutter and Content */
-  backdrop-filter: blur(10px); 
-  border-right: 1px solid rgba(255,255,255,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 350px;
+  height: 100vh;
+  display: flex;
+  flex-direction: row; /* vertical sidebar on left */
+  background: var(--panel-bg);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 999;
 }
 
-/* --- THE FIX: ICON GUTTER --- */
 .icon-gutter {
   width: 60px;
-  min-width: 60px; /* Force it to stay 60px */
+  min-width: 60px;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 15px 0;
   gap: 10px;
-  flex-shrink: 0; /* Prevents content from squishing the gutter */
 }
 
 .side-icon {
-  width: 28px !important; /* Forces the giant icons to shrink */
-  height: 28px !important;
-  object-fit: contain;
-  cursor: pointer;
+  width: 28px;
+  height: 28px;
   opacity: 0.5;
+  cursor: pointer;
   transition: 0.2s;
-  flex-shrink: 0;
 }
+
+.side-icon:hover { opacity: 0.8; }
 
 .active-icon {
   opacity: 1;
@@ -51,48 +41,52 @@ body, html {
   border-radius: 8px;
 }
 
-/* --- CONTENT AREA --- */
 #dynamic-content {
-  flex: 1; /* Takes up the remaining 290px of the 350px width */
+  flex: 1;
   padding: 15px;
-  overflow-y: auto; /* Allow history to scroll within the panel */
+  overflow-y: auto;
 }
 
-.alert-pill {
-  text-align: center; padding: 10px; border-radius: 8px;
-  font-weight: 900; margin-bottom: 20px; color: white;
+/* --- MOBILE RESPONSIVE --- */
+@media (max-width: 768px) {
+  #eew-panel {
+    flex-direction: column; /* sidebar moves to bottom */
+    width: 100%;
+    height: auto;
+    bottom: 0;
+    top: auto;
+    border-right: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .icon-gutter {
+    flex-direction: row; /* icons horizontal */
+    width: 100%;
+    height: 60px;
+    min-width: unset;
+    padding: 0 10px;
+    justify-content: center;
+  }
+
+  #dynamic-content {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+  }
 }
 
-.pill-idle { color: #00d9ff; border: 1px solid #00d9ff; background: rgba(0, 217, 255, 0.05); }
-.pill-forecast { color: #000; background: #ff8c00; }
-.pill-warning { animation: flash-red 1s infinite; }
-
-@keyframes flash-red {
-  0%, 100% { background: #ff0000; }
-  50% { background: #800000; }
+/* --- MAP STRETCH --- */
+#map-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* make sure it's behind panel */
 }
 
-.eew-display-box {
-  display: flex; gap: 12px; align-items: flex-start;
-  background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px;
+@media (max-width: 768px) {
+  #map-container {
+    bottom: 60px; /* leaves space for bottom panel */
+  }
 }
-
-.main-shindo-img { width: 75px; height: 75px; flex-shrink: 0; }
-.hypo-title { font-size: 18px; font-weight: bold; display: block; margin-bottom: 5px; color: #fff; }
-.mag-depth-text { font-size: 13px; color: #ccc; }
-
-.section-label { font-size: 11px; color: #888; margin: 25px 0 8px 0; text-transform: uppercase; letter-spacing: 1px; }
-
-.history-item { 
-  display: flex; align-items: center; gap: 10px; 
-  background: rgba(255,255,255,0.05); padding: 8px; 
-  border-radius: 6px; margin-bottom: 8px; 
-}
-
-.history-shindo-icon { width: 30px; height: 30px; flex-shrink: 0; }
-.jquake-main-text { padding: 10px; color: #888; text-align: center; font-size: 13px; }
-
-/* Clock & Status (Bottom Right) */
-#bottom-right-status { position: fixed; bottom: 20px; right: 20px; text-align: right; z-index: 1000; }
-#jst-clock { font-size: 22px; font-weight: bold; font-family: monospace; color: #fff; }
-#server-status { font-size: 10px; color: #00ff66; opacity: 0.8; }
