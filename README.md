@@ -72,3 +72,6 @@
   <br />
   <small>※本ソフトウェアは、地震による被害の軽減を目的としていますが、情報の正確性を保証するものではありません。実際の避難の際は気象庁の指示に従ってください。</small>
 </div>
+To-Do 
+Fix the map
+actually implementing the eew thing
