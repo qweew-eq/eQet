@@ -1,6 +1,6 @@
 // src/ws/wolfx.js
 export function connectWolfx(onMessage) {
-    const ws = new WebSocket('wss://ws-api.wolfx.jp/jma_eew');
+    const ws = new WebSocket('wss://didactic-happiness-qc76.onrender.com/latest');
     const statusText = document.getElementById('server-status');
 
     ws.onopen = () => { if (statusText) statusText.innerText = "受信サーバー接続中"; };
