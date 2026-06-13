@@ -14,6 +14,7 @@ body, html {
     background: var(--bg-dark);
     overflow: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica;
+    color: var(--text-main); /* Fixes dark-on-dark text rendering visibility */
 }
 
 /* --- THE MAP (Always full width, desktop sidebar covers it slightly) --- */
@@ -46,6 +47,7 @@ body, html {
     align-items: center;
     padding: 20px 0;
     gap: 20px;
+    flex-shrink: 0; /* Prevents navigation menu from compression */
 }
 
 .side-icon {
@@ -68,32 +70,63 @@ body, html {
     background: var(--orange-alert);
     color: white; padding: 12px;
     text-align: center; font-weight: bold; font-size: 13px;
+    flex-shrink: 0;
 }
 
 .quake-card {
     background: var(--card-dark);
-    margin: 8px 12px; padding: 12px;
-    border-radius: 6px; display: flex;
-    align-items: center; gap: 12px;
+    margin: 8px 12px; 
+    padding: 12px;
+    border-radius: 8px; 
+    display: flex;
+    flex-direction: row; /* Enforces horizontal alignment */
+    align-items: center; 
+    gap: 14px;
+    flex-shrink: 0; /* Prevents cards from smashing into each other */
 }
 
+/* FIXED: Hard bounding limits to stop icons from exploding across layout axes */
 .shindo-box {
-    width: 32px; height: 32px;
+    width: 48px; 
+    height: 48px;
+    min-width: 48px;
+    max-width: 48px;
+    min-height: 48px;
+    max-height: 48px;
+    flex-shrink: 0; /* Forces Flexbox layout engine to respect sizes */
+    flex-grow: 0;
+    
     background: var(--shindo-blue);
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 4px; font-weight: bold; color: white;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    border-radius: 8px; 
+    font-weight: bold; 
+    color: white;
+    font-size: 22px;
 }
 
-/* --- MOBILE RESPONSIVE (The bottom list from your photo) --- */
+/* NEW: Layout helper class for text elements inside your JavaScript card renderer */
+.quake-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+    text-align: left;
+}
+
+/* --- MOBILE RESPONSIVE FIXES --- */
 @media (max-width: 768px) {
     #map {
         height: 50vh; /* Map takes top half on mobile */
+        position: absolute;
+        top: 0; left: 0; width: 100%;
     }
 
     #eew-panel {
-        top: auto; bottom: 0;
+        top: 50vh; bottom: 0; left: 0;
         width: 100%; height: 50vh; /* List takes bottom half */
-        flex-direction: column-reverse; /* Nav bar at absolute bottom */
+        flex-direction: column; /* Fixed: Normal flow removes reverse scaling distortion */
         border-right: none;
         border-top: 1px solid rgba(255,255,255,0.1);
     }
@@ -102,12 +135,17 @@ body, html {
         width: 100%; height: 65px;
         flex-direction: row;
         justify-content: space-around;
+        align-items: center;
         padding: 0 10px;
         background: var(--bg-dark);
         padding-bottom: env(safe-area-inset-bottom);
+        order: 2; /* Naturally forces navigation bar to sit at absolute bottom */
     }
 
     #dynamic-content {
-        padding-bottom: 5px;
+        order: 1; /* Pushes scrollable card stream container above navigation bar */
+        flex: 1;
+        overflow-y: auto;
+        padding-bottom: 8px;
     }
 }
