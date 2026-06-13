@@ -44,15 +44,15 @@ export function updatePanel(eew, history = []) {
     }
   }
 
-  // 4. Render History
+  // 4. Render History (FIXED: Connected templates directly to our layout rules)
   const historyHtml = history.map(q => {
     const intensity = P2P_SHINDO[q.earthquake.maxScale] || 'unk';
     return `
-      <div class="history-item">
-        <img src="/shindoimg/panelintensity/shindo_${intensity}.png" class="history-shindo-icon">
-        <div style="font-size:11px;">
-          <div style="font-weight:bold; color:#fff;">${q.earthquake.hypocenter.name}</div>
-          <div style="color:#aaa;">M${q.earthquake.hypocenter.magnitude} / ${formatDepth(q.earthquake.hypocenter.depth)}</div>
+      <div class="quake-card">
+        <img src="/shindoimg/panelintensity/shindo_${intensity}.png" class="shindo-box">
+        <div class="quake-info">
+          <div style="font-weight: bold; color: var(--text-main); font-size: 14px;">${q.earthquake.hypocenter.name}</div>
+          <div style="color: #aaa; font-size: 12px;">M${q.earthquake.hypocenter.magnitude} / ${formatDepth(q.earthquake.hypocenter.depth)}</div>
         </div>
       </div>`;
   }).join('');
@@ -62,20 +62,20 @@ export function updatePanel(eew, history = []) {
       <div class="alert-pill ${pillClass}" style="background: ${pillColor};">${reportTitle}</div>
 
       ${eew ? `
-        <div class="eew-display-box">
-          <img src="/shindoimg/panelintensity/${imgName}" class="main-shindo-img">
-          <div class="eew-info-text">
-            <span class="hypo-title">${eew.Hypocenter}</span>
-            <div class="mag-depth-text">M ${eew.Magunitude} / 深さ ${formatDepth(eew.Depth)}</div>
+        <div class="eew-display-box" style="display: flex; align-items: center; gap: 14px; margin: 12px; padding: 12px;">
+          <img src="/shindoimg/panelintensity/${imgName}" class="shindo-box" style="width: 56px; height: 56px; min-width: 56px; max-width: 56px; min-height: 56px; max-height: 56px;">
+          <div class="quake-info">
+            <span class="hypo-title" style="font-weight: bold; font-size: 16px; color: var(--text-main);">${eew.Hypocenter}</span>
+            <div class="mag-depth-text" style="color: #aaa; font-size: 13px; margin-top: 2px;">M ${eew.Magunitude} / 深さ ${formatDepth(eew.Depth)}</div>
           </div>
         </div>
       ` : `
-        <div class="jquake-main-text">
+        <div class="jquake-main-text" style="padding: 16px; color: #aaa; font-size: 13px; text-align: center;">
            現在、緊急地震速報は発表されていません。
         </div>
       `}
       
-      <div class="section-label">過去の地震情報</div>
-      <div id="history-list">${historyHtml}</div>
+      <div class="section-label" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em;">過去の地震情報</div>
+      <div id="history-list" style="display: flex; flex-direction: column;">${historyHtml}</div>
   `;
 }
