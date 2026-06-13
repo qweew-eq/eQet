@@ -36,8 +36,26 @@ export const eewManager = {
   },
 
   async fetchEqHistory() {
-    const res = await fetch('https://api.p2pquake.net/v2/history?codes=551&limit=5');
-    this.historyQuakes = await res.json();
+    // FIX: Fetch 15 items instead of 5 so we have enough raw data to extract 
+    // 5 distinct earthquakes after removing sequential updates.
+    const res = await fetch('https://api.p2pquake.net/v2/history?codes=551&limit=15');
+    const data = await res.json();
+    
+    const uniqueQuakes = [];
+    const seenTimes = new Set();
+
+    for (const item of data) {
+      // Use the specific origin time of the quake as a unique tracking fingerprint
+      const timeKey = item.earthquake?.time || item.id;
+      
+      if (!seenTimes.has(timeKey)) {
+        seenTimes.add(timeKey);
+        uniqueQuakes.push(item);
+      }
+    }
+
+    // Safely store exactly the 5 most recent unique events
+    this.historyQuakes = uniqueQuakes.slice(0, 5);
     this.refresh();
   },
 
@@ -46,7 +64,22 @@ export const eewManager = {
     ws.onmessage = (e) => {
       const d = JSON.parse(e.data);
       if (d.code === 551) {
-        this.historyQuakes.unshift(d);
+        const timeKey = d.earthquake?.time || d.id;
+        
+        // FIX: Check if this specific earthquake already exists in our list
+        const existingIndex = this.historyQuakes.findIndex(
+          (eq) => (eq.earthquake?.time || eq.id) === timeKey
+        );
+
+        if (existingIndex !== -1) {
+          // If it exists, replace the stale card data with the fresh update in-place
+          this.historyQuakes[existingIndex] = d;
+        } else {
+          // If it's a completely new physical event, prepend it to the top
+          this.historyQuakes.unshift(d);
+        }
+
+        // Maintain the structural layout cap
         this.historyQuakes = this.historyQuakes.slice(0, 5);
         this.refresh();
       }
