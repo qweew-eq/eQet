@@ -1,7 +1,3 @@
-<div style="border:2px solid red; padding:12px; background:#ffe6e6;">
-  <strong>🚨 WARNING</strong><br>
-  This app does not get many updates due to me being in school.
-</div>
 
 
 <div align="center">
