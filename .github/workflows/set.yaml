@@ -1,4 +1,4 @@
-name: Deploy Web and Windows
+name: Deploy Web and Desktop Apps
 on:
   push:
     branches: [ main ]
@@ -14,7 +14,7 @@ jobs:
         with:
           node-version: 22
       
-      - name: Build and Deploy
+      - name: Build and Deploy Web
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -23,22 +23,61 @@ jobs:
           npm run build
           npx wrangler@latest pages deploy ./dist --project-name=eqet-eew --branch main --commit-dirty=true
 
-  build-windows:
-    runs-on: windows-latest
+  build-desktop:
     needs: deploy-web
+    runs-on: ${{ matrix.platform.runner }}
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - os: windows
+            runner: windows-latest
+            args: ""
+          - os: macos
+            runner: macos-latest
+            args: "--target universal-apple-darwin"
+          - os: linux-x64
+            runner: ubuntu-latest
+            args: ""
+          - os: linux-arm64
+            runner: ubuntu-24.04-arm
+            args: ""
+
     steps:
       - uses: actions/checkout@v4
+
+      # Install Linux System Dependencies (Only runs on Linux machines)
+      - name: Install Linux System Dependencies
+        if: startsWith(matrix.platform.os, 'linux')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libgtk-3-dev \
+            webkit2gtk-4.1-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libjavascriptcoregtk-4.1-dev
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      # Install Rust & Setup Mac Universal Cross-Compilation targets
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform.os == 'macos' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
       - name: Build Web Assets for Tauri
         run: |
           npm install
           npm run build
-      - name: Build Tauri App
+
+      - name: Build and Package Tauri App
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -47,3 +86,5 @@ jobs:
           releaseName: 'eQet Release v__VERSION__'
           releaseDraft: true
           prerelease: false
+          args: ${{ matrix.platform.args }}
+          
