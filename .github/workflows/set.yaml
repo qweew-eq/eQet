@@ -20,7 +20,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           REAL_KEY: ${{ secrets.MAPTILER_API_KEY }}
         run: |
-          sed -i "s|__MAPTILER_KEY__|$REAL_KEY|g" src/map.js
+          sed -i "s|__MAPTILER_KEY__|$REAL_KEY|g" src/map/map.js
           npm install
           npm run build
           npx wrangler@latest pages deploy ./dist --project-name=eqet-eew --branch main --commit-dirty=true
@@ -85,7 +85,7 @@ jobs:
         env:
           REAL_KEY: ${{ secrets.MAPTILER_API_KEY }}
         run: |
-          sed -i "s|__MAPTILER_KEY__|$REAL_KEY|g" src/map.js
+          sed -i "s|__MAPTILER_KEY__|$REAL_KEY|g" src/map/map.js
           npm install
           npm run build
 
