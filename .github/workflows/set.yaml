@@ -8,19 +8,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      
+
       - name: Build and Deploy Web
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           REAL_KEY: ${{ secrets.MAPTILER_API_KEY }}
         run: |
-          sed -i "s|__MAPTILER_KEY__|$REAL_KEY|g" src/map/map.js
+          node -e "const fs = require('fs'); const f = 'src/map/map.js'; fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace(/__MAPTILER_KEY__/g, process.env.REAL_KEY));"
           npm install
           npm run build
           npx wrangler@latest pages deploy ./dist --project-name=eqet-eew --branch main --commit-dirty=true
@@ -36,18 +36,23 @@ jobs:
         platform:
           - os: windows-x64
             runner: windows-latest
+            target_triple: x86_64-pc-windows-msvc
             args: ""
           - os: windows-arm64
             runner: windows-latest
+            target_triple: aarch64-pc-windows-msvc
             args: "--target aarch64-pc-windows-msvc"
           - os: macos
             runner: macos-latest
+            target_triple: universal-apple-darwin
             args: "--target universal-apple-darwin"
           - os: linux-x64
             runner: ubuntu-latest
+            target_triple: x86_64-unknown-linux-gnu
             args: ""
           - os: linux-arm64
-            runner: ubuntu-24.04-arm
+            runner: ubuntu-latest
+            target_triple: aarch64-unknown-linux-gnu
             args: ""
 
     steps:
@@ -74,18 +79,35 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install Rust
+      - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: |
-            ${{ matrix.platform.os == 'macos' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
-            ${{ matrix.platform.os == 'windows-arm64' && 'aarch64-pc-windows-msvc' || '' }}
+
+      - name: Add Rust targets (macOS universal)
+        if: matrix.platform.os == 'macos'
+        run: |
+          rustup target add aarch64-apple-darwin x86_64-apple-darwin
+
+      - name: Add Rust target (Windows ARM)
+        if: matrix.platform.os == 'windows-arm64'
+        run: |
+          rustup target add aarch64-pc-windows-msvc
+
+      - name: Add Rust target (Linux ARM)
+        if: matrix.platform.os == 'linux-arm64'
+        run: |
+          rustup target add aarch64-unknown-linux-gnu
+
+      - name: Install Linux cross toolchain (for linux-arm64)
+        if: matrix.platform.os == 'linux-arm64'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu libc6-dev-arm64-cross
 
       - name: Build Web Assets for Tauri
         env:
           REAL_KEY: ${{ secrets.MAPTILER_API_KEY }}
         run: |
-          sed -i "s|__MAPTILER_KEY__|$REAL_KEY|g" src/map/map.js
+          node -e "const fs = require('fs'); const f = 'src/map/map.js'; fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace(/__MAPTILER_KEY__/g, process.env.REAL_KEY));"
           npm install
           npm run build
 
@@ -95,10 +117,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
         with:
           tagName: app-v__VERSION__
           releaseName: 'eQet Release v__VERSION__'
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.platform.args }} --no-version-check
-          
