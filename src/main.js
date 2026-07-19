@@ -5,13 +5,34 @@ import { waveAnimation } from './ui/waves.js';
 import { updatePanel } from './ui/panel.js';
 import { renderMotionPanel } from './motion/motionPanel.js';
 import { motionManager } from './motion/motionManager.js';
+import { check } from '@tauri-apps/plugin-updater';
 
-// 1. Initialize Map and WS immediately
 const map = initMap();
 eewManager.start(map);
 
+async function runAutoUpdater() {
+  try {
+    const update = await check();
+    if (update) {
+      await update.downloadAndInstall();
+    }
+  } catch (err) {
+    console.error('Updater check failed:', err);
+  }
+}
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === '/') {
+    const input = prompt("Enter command:");
+    if (input === '/test1') {
+      eewManager.triggerMock();
+    }
+  }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
-  // 2. NAVIGATION (Guarded)
+  runAutoUpdater();
+
   const navIcons = document.querySelectorAll('.side-icon');
   navIcons.forEach(icon => {
     icon.onclick = () => {
@@ -29,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   });
 
-  // 3. SETTINGS & CLOCK (Guarded to prevent crash if IDs are missing)
   const settingsBtn = document.getElementById('settings-btn');
   const clockEl = document.getElementById('jst-clock');
 
@@ -52,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// 4. ANIMATION LOOP (Wait for Map)
 map.on('load', () => {
   const animate = () => {
     const active = eewManager.getActiveDisplay();
