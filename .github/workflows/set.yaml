@@ -1,4 +1,4 @@
-name: Deploy Web and Desktop Apps
+Name: Deploy Web and Desktop Apps
 on:
   push:
     branches: [ main ]
@@ -32,9 +32,12 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - os: windows
+          - os: windows-x64
             runner: windows-latest
             args: ""
+          - os: windows-arm64
+            runner: windows-latest
+            args: "--target aarch64-pc-windows-msvc"
           - os: macos
             runner: macos-latest
             args: "--target universal-apple-darwin"
@@ -48,51 +51,52 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-            # Install Linux System Dependencies (Only runs on Linux machines)
+      # Install Linux System Dependencies updated for Tauri v2 requirements
       - name: Install Linux System Dependencies
         if: startsWith(matrix.platform.os, 'linux')
         run: |
-          # If on Ubuntu 24.04+, pull in the universe repo to find legacy webkit libraries
-          if lsb_release -c | grep -q "noble"; then
-            sudo add-apt-repository -y universe
-          fi
-          
           sudo apt-get update
           sudo apt-get install -y \
             libgtk-3-dev \
             webkit2gtk-4.1-dev \
-            webkit2gtk-4.0-dev \
-            libsoup2.4-dev \
+            libjavascriptcoregtk-4.1-dev \
             libsoup-3.0-dev \
-            libayatana-appindicator3-dev \
-            librsvg2-dev \
-            patchelf \
-            libjavascriptcoregtk-4.1-dev
+            libappindicator3-dev \
+            ninja-build \
+            xdotool \
+            libxdo-dev \
+            libxcb-shape0-dev \
+            libxcb-xfixes0-dev
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      # Install Rust & Setup Mac Universal Cross-Compilation targets
+      # Install Rust & Setup Cross-Compilation targets for Mac Universal and Windows ARM64
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.platform.os == 'macos' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          targets: |
+            ${{ matrix.platform.os == 'macos' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+            ${{ matrix.platform.os == 'windows-arm64' && 'aarch64-pc-windows-msvc' || '' }}
 
       - name: Build Web Assets for Tauri
         run: |
           npm install
           npm run build
 
+      # Updated to official Tauri v2 Action with Secure Automated Signing
       - name: Build and Package Tauri App
-        uses: tauri-apps/tauri-action@v0
+        uses: tauri-apps/tauri-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
         with:
           tagName: app-v__VERSION__
           releaseName: 'eQet Release v__VERSION__'
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.platform.args }}
+          args: ${{ matrix.platform.args }} --no-version-check
           
