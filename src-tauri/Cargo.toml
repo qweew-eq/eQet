@@ -1,20 +1,18 @@
 [package]
 name = "eqet"
-version = "0.1.0"
+version = "0.1.3"
 description = "¯\\_(ツ)_/¯"
 authors = ["CurrentEEW", "vo1dd"]
 edition = "2021"
-rust-version = "1.57"
+rust-version = "1.77"
 build = "build.rs" 
 
 [build-dependencies]
-tauri-build = { version = "1.5", features = [] }
+tauri-build = "2.0.0"
 
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
-tauri = { version = "1.6", features = ["shell-all"] }
-
-[features]
-default = ["custom-protocol"]
-custom-protocol = ["tauri/custom-protocol"]
+tauri = { version = "2.0.0", features = [] }
+tauri-plugin-updater = "2.0.0"
+tauri-plugin-shell = "2.0.0"
