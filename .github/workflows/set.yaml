@@ -1,4 +1,4 @@
-Name: Deploy Web and Desktop Apps
+name: Deploy Web and Desktop Apps
 on:
   push:
     branches: [ main ]
@@ -18,7 +18,9 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          REAL_KEY: ${{ secrets.MAPTILER_API_KEY }}
         run: |
+          sed -i "s|__MAPTILER_KEY__|$REAL_KEY|g" src/map.js
           npm install
           npm run build
           npx wrangler@latest pages deploy ./dist --project-name=eqet-eew --branch main --commit-dirty=true
@@ -51,7 +53,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Install Linux System Dependencies updated for Tauri v2 requirements
       - name: Install Linux System Dependencies
         if: startsWith(matrix.platform.os, 'linux')
         run: |
@@ -73,7 +74,6 @@ jobs:
         with:
           node-version: 22
 
-      # Install Rust & Setup Cross-Compilation targets for Mac Universal and Windows ARM64
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -82,11 +82,13 @@ jobs:
             ${{ matrix.platform.os == 'windows-arm64' && 'aarch64-pc-windows-msvc' || '' }}
 
       - name: Build Web Assets for Tauri
+        env:
+          REAL_KEY: ${{ secrets.MAPTILER_API_KEY }}
         run: |
+          sed -i "s|__MAPTILER_KEY__|$REAL_KEY|g" src/map.js
           npm install
           npm run build
 
-      # Updated to official Tauri v2 Action with Secure Automated Signing
       - name: Build and Package Tauri App
         uses: tauri-apps/tauri-action@v1
         env:
