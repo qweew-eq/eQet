@@ -1,20 +1,29 @@
 {
-  "package": {
-    "productName": "eQet",
-    "version": "0.1.0"
+  "productName": "eQet",
+  "version": "0.1.0",
+  "identifier": "void.eqet.eq",
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/icon.ico"
+    ],
+    "createUpdaterArtifacts": true
   },
-  "tauri": {
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "net.eew.eqet",
-      "icon": [
-        "icons/icon.ico"
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IENENDMzNzY5Njg1NDA3OUYKUldTZkIxUm9hVGREemJZRWNvSkFCRDJTYnlrKzUzOUY0U25vdGZyZXE3NkkyZlNLSnpuKzEwNWEK",
+      "endpoints": [
+        "https://eqet-eew.pages.dev/updates/{{target}}/{{arch}}/{{current_version}}"
       ]
-    },
-    "allowlist": {
-      "all": true
-    },
+    }
+  },
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:5173"
+  },
+  "app": {
     "windows": [
       {
         "title": "eQet",
@@ -23,10 +32,5 @@
         "resizable": true
       }
     ]
-  },
-  "build": {
-    "beforeBuildCommand": "npm run build",
-    "distDir": "../dist",
-    "devPath": "http://localhost:5173"
   }
 }
