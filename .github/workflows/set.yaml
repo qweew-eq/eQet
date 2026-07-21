@@ -123,4 +123,4 @@ jobs:
           releaseName: 'eQet Release v__VERSION__'
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.platform.args }} --no-version-check
+          args: ${{ matrix.platform.args }} --ignore-version-mismatches
