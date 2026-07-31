@@ -1,37 +1,31 @@
 {
-    "$schema": "https://schema.tauri.app/config/v2",
-  "productName": "eQet",
-  "version": "0.1.0",
-  "identifier": "void.eqet.eq",
-  "bundle": {
-    "active": true,
-    "targets": "all",
-    "icon": [
-      "icons/16x16.png",
-      "icons/32x32.png",
-      "icons/64x64.png",
-      "icons/128x128.png",
-      "icons/256x256.png",
-      "icons/512x512.png",
-      "icons/icon.ico",
-      "icons/icon.icns"
-    ],
-    "createUpdaterArtifacts": true
+  "$schema": "https://schema.tauri.app/config/v2",
+  "package": {
+    "productName": "eQet",
+    "version": "0.1.0"
   },
-"plugins": {
-  "updater": {
-    "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDgyRTQ2NjdCN0NGRDEyREQKUldUZEV2MThlMmJrZ3Jxbzk5b2xma1JWUnZNZ0xpWVVKbWt2Zm1yYlJIY0FuZmthekpxamR1RVcK",
-    "endpoints": [
-      "https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO/releases/latest/download/latest.json"
-    ]
-  }
-}, 
   "build": {
     "beforeBuildCommand": "npm run build",
-    "frontendDist": "../dist",
-    "devUrl": "http://localhost:5173"
+    "distDir": "../dist",
+    "devPath": "http://localhost:5173"
   },
-  "app": {
+  "tauri": {
+    "bundle": {
+      "identifier": "void.eqet.eq",
+      "active": true,
+      "targets": ["all"],
+      "icon": [
+        "icons/16x16.png",
+        "icons/32x32.png",
+        "icons/64x64.png",
+        "icons/128x128.png",
+        "icons/256x256.png",
+        "icons/512x512.png",
+        "icons/icon.ico",
+        "icons/icon.icns"
+      ],
+      "createUpdaterArtifacts": true
+    },
     "windows": [
       {
         "title": "eQet",
@@ -40,5 +34,13 @@
         "resizable": true
       }
     ]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDgyRTQ2NjdCN0NGRDEyREQKUldUZEV2MThlMmJrZ3Jxbzk5b2xma1JWUnZNZ0xpWVVKbWt2Zm1yYlJIY0FuZmthekpxamR1RVcK",
+      "endpoints": [
+        "https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO/releases/latest/download/latest.json"
+      ]
+    }
   }
 }
