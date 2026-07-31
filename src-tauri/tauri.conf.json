@@ -20,7 +20,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IENENDMzNzY5Njg1NDA3OUYKUldTZkIxUm9hVGREemJZRWNvSkFCRDJTYnlrKzUzOUY0U25vdGZyZXE3NkkyZlNLSnpuKzEwNWEK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDgyRTQ2NjdCN0NGRDEyREQKUldUZEV2MThlMmJrZ3Jxbzk5b2xma1JWUnZNZ0xpWVVKbWt2Zm1yYlJIY0FuZmthekpxamR1RVcK",
       "endpoints": [
         "https://eqet-eew.pages.dev/updates/{{target}}/{{arch}}/{{current_version}}"
       ]
