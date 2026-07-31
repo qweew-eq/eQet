@@ -18,14 +18,14 @@
     ],
     "createUpdaterArtifacts": true
   },
-  "plugins": {
-    "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDgyRTQ2NjdCN0NGRDEyREQKUldUZEV2MThlMmJrZ3Jxbzk5b2xma1JWUnZNZ0xpWVVKbWt2Zm1yYlJIY0FuZmthekpxamR1RVcK",
-      "endpoints": [
-        "https://eqet-eew.pages.dev/updates/{{target}}/{{arch}}/{{current_version}}"
-      ]
-    }
-  },
+"plugins": {
+  "updater": {
+    "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDgyRTQ2NjdCN0NGRDEyREQKUldUZEV2MThlMmJrZ3Jxbzk5b2xma1JWUnZNZ0xpWVVKbWt2Zm1yYlJIY0FuZmthekpxamR1RVcK",
+    "endpoints": [
+      "https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO/releases/latest/download/latest.json"
+    ]
+  }
+}, 
   "build": {
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist",
